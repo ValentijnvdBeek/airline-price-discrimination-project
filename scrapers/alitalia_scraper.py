@@ -25,15 +25,15 @@ class AlitaliaScraper(Scraper):
         self.driver.delete_cookie('ak_bmsc')
         self.driver.add_cookie(ak_bmsc_cookie)
         # Get search parameters handlers #
-        origin_selector = self.driver.find_element_by_id('luogo-partenza--prenota-desk')
-        destination_selector = self.driver.find_element_by_id('luogo-arrivo--prenota-desk')
-        departure_date_selector = self.driver.find_element_by_id('data-andata--prenota-desk')
-        return_date_selector = self.driver.find_element_by_id('data-ritorno--prenota-desk')
+        origin_selector = self.driver.find_element(By.ID, 'luogo-partenza--prenota-desk')
+        destination_selector = self.driver.find_element(By.ID, 'luogo-arrivo--prenota-desk')
+        departure_date_selector = self.driver.find_element(By.ID, 'data-andata--prenota-desk')
+        return_date_selector = self.driver.find_element(By.ID, 'data-ritorno--prenota-desk')
         # Input search parameters #
         origin_selector.clear()
         origin_selector.send_keys(self.itinerary['origin'])
         destination_selector.send_keys(self.itinerary['destination'])
-        self.driver.find_element_by_id('data-andata--prenota-desk').click()
+        self.driver.find_element(By.ID, 'data-andata--prenota-desk').click()
         if self.user['user'] in ['Android-Chrome', 'iOS-Safari']:
             day, month = self.format_alitalia_date(self.itinerary['departure_date'])
             self.scroll_to_month(month.capitalize())
@@ -43,15 +43,15 @@ class AlitaliaScraper(Scraper):
         else:
             departure_date_selector.send_keys(self.itinerary['departure_date'])
             return_date_selector.send_keys(self.itinerary['return_date'])
-            validate_date_button = self.driver.find_element_by_id('validate_date')
+            validate_date_button = self.driver.find_element(By.ID, 'validate_date')
             validate_date_button.click()
         sleep(2)
         # TODO: select number of passengers
         # Input passenger number #
-        # add_passenger_button = self.driver.find_element_by_id('addAdults')
+        # add_passenger_button = self.driver.find_element(By.ID, 'addAdults')
         # add_passenger_button.click()
         # Submit search #
-        submit_button = self.driver.find_element_by_id('submitHidden--prenota')
+        submit_button = self.driver.find_element(By.ID, 'submitHidden--prenota')
         submit_button.click()
         sleep(10)
 

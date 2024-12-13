@@ -64,7 +64,7 @@ class RyanairScraper(Scraper):
 
     def desktop_search(self):
         """Start search for desktop user profile."""
-        origin_selector = self.driver.find_element_by_id('input-button__departure')
+        origin_selector = self.driver.find_element(By.ID, 'input-button__departure')
         origin_selector.click()
         origin_selector.clear()
         origin_selector.send_keys(self.itinerary['origin'])
@@ -73,7 +73,7 @@ class RyanairScraper(Scraper):
             f'[data-id="{self.itinerary["origin"]}"]').click()
         sleep(3)
         # Input destination airport #
-        destination_selector = self.driver.find_element_by_id('input-button__destination')
+        destination_selector = self.driver.find_element(By.ID, 'input-button__destination')
         destination_selector.send_keys(self.itinerary['destination'])
         self.wait_for_element(
             By.CSS_SELECTOR, ec.element_to_be_clickable,

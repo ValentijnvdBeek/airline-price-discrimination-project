@@ -17,7 +17,7 @@ class LufthansaScraper(Scraper):
     def get_availability(self):
         """Get Lufthansa availability."""
         self.driver.delete_cookie('ak_bmsc')
-        self.driver.find_element_by_id('cm-acceptAll').click()
+        self.driver.find_element(By.ID, 'cm-acceptAll').click()
         sleep(5)
         try:
             self.driver.find_element_by_xpath('//button[@aria-label="Chiudi "]').click()
