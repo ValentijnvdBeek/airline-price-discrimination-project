@@ -15,6 +15,8 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import InvalidCookieDomainException, NoSuchElementException,\
     TimeoutException, StaleElementReferenceException, ElementNotInteractableException
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 from tools.spreadsheet_tool import export_to_csv
 
@@ -59,12 +61,14 @@ class Scraper(ABC):
         """Load required configuration."""
         self._load_driver_options()
         if self.selenium_browser == 'Chrome':
+            service = ChromeService(executable_path=BROWSER_DRIVER[self.os][self.selenium_browser])
             self.driver = webdriver.Chrome(
-                executable_path=BROWSER_DRIVER[self.os][self.selenium_browser],
+                service=service,
                 options=self.driver_options)
         elif self.selenium_browser == 'Firefox':
+            service = FirefoxService(executable_path=BROWSER_DRIVER[self.os][self.selenium_browser])
             self.driver = webdriver.Firefox(
-                executable_path=BROWSER_DRIVER[self.os][self.selenium_browser],
+                service=service,
                 options=self.driver_options)
         if self.run_with_cookies:
             self._load_cookies()
