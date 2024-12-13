@@ -13,6 +13,7 @@ from scrapers.ryanair_scraper import RyanairScraper
 from tools.logger_tool import get_logger
 from tools.spreadsheet_tool import OUTPUT_FOLDER
 from users.user_profiles import USER_LIST
+from shutil import which
 
 CARRIER_SCRAPERS = {
     'Alitalia': AlitaliaScraper,
@@ -20,6 +21,7 @@ CARRIER_SCRAPERS = {
     'Lufthansa': LufthansaScraper
 }
 
+HAS_NORDVPN = which("nordvpn") != None
 
 if __name__ == '__main__':
     logger = get_logger(filename=os.path.join(OUTPUT_FOLDER, 'logbook.log'))
@@ -30,17 +32,25 @@ if __name__ == '__main__':
         logger.info(f'{carrier} scraping session started'.upper())
         for user in USER_LIST:
             try:
-                subprocess.run(['nordvpn', 'disconnect'])
-                time.sleep(5)
-                subprocess.run(['nordvpn', 'connect', f'{user["vpn_server"]}'])
-                time.sleep(5)
+                if HAS_NORDVPN:
+                    subprocess.run(['nordvpn', 'disconnect'])
+                    time.sleep(5)
+                    subprocess.run(['nordvpn', 'connect', f'{user["vpn_server"]}'])
+                    time.sleep(5)
+                else:
+                    print("!!!Please consider using a VPN such as Proton or NordVPN!!!")
+                    print("!!!Using this script might cause your IP to be blacklisted!!!")
+                    print("!!!There might be differences between countries in terms of pricing or UI!!!")
+
                 try:
                     ip_address = os.popen('curl -s ifconfig.me').read()
                 except requests.exceptions.ConnectionError:
                     ip_address = 'Error'
-                if ip_address != user["ip_address"]:
+
+                if HAS_NORDVPN and ip_address != user["ip_address"]:
                     logger.error(f'{user["user"]}: IP address should be {user["ip_address"]} '
                                  f'instead of {ip_address}!')
+
                 for itinerary in ITINERARIES[carrier]:
                     scraper = scraper_class(
                         user=user, selenium_browser='Chrome', itinerary=itinerary)
